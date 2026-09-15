@@ -1,7 +1,9 @@
 # TASKFLOW — Plan de trabajo en equipo
 
 **Equipo:** Martin (backend) · Santiago (frontend)
-**Repo:** https://github.com/martinz10one/taskflow
+**Repositorios (1 por persona):**
+- Backend (Martin): https://github.com/martinz10one/taskflow-backend
+- Frontend (Santiago): https://github.com/martinz10one/taskflow-frontend
 **Arquitectura de referencia:** `ARQUITECTURA_TASKFLOW.md`
 
 ---
@@ -20,33 +22,34 @@
 
 ## 2. Trabajo en Git
 
-Ramas base (ya creadas en el repo):
+Cada persona trabaja en **su propio repositorio** y envía los cambios a su propia rama principal (`main`/`develop`). No comparten código directamente: se comunican mediante el **contrato de la API** (sección 3) y el **Catálogo de eventos Socket.IO** (sección 4).
+
+Ramas dentro de cada repositorio:
 
 ```text
 main     → producción (estable, no se commitea directo)
-develop  → integración del trabajo de los dos
+develop  → integración del trabajo propio
+feature/*→ ramas de trabajo por tarea (ej: feature/dashboard)
 ```
-
-Ramas de trabajo — cada uno crea la suya desde `develop`:
 
 ```bash
 # Santiago (frontend)
-git clone https://github.com/martinz10one/taskflow.git
+git clone https://github.com/martinz10one/taskflow-frontend.git
 git checkout develop
 git checkout -b feature/frontend-base
 
 # Martin (backend)
-git checkout develop
+git clone https://github.com/martinz10one/taskflow-backend.git
 git checkout -b feature/backend-base
 ```
 
 Reglas:
 
-1. Trabajar siempre en la rama `feature/*` propia.
-2. Al terminar una tarea completa: `git add . && git commit -m "..."` y `git push -u origin feature/<rama>`.
-3. Abrir Pull Request a `develop`; **la otra persona revisa** el código antes del merge.
-4. Antes de seguir: `git checkout develop && git pull` y actualizar tu rama (`git merge develop`).
-5. No commitear directo a `main` ni `develop`.
+1. Trabajar siempre en una rama `feature/*` creada desde `develop`.
+2. Al terminar una tarea: `git add . && git commit -m "..."` y `git push -u origin feature/<rama>`.
+3. Integrar en `develop` (revisar antes de juntar con `main`).
+4. Mantener `PLAN_COLABORACION.md` y el contrato de la API sincronizados: si cambia un endpoint o un evento, avisar al compañero y actualizar este documento en ambos repos.
+5. No commitear directo a `main`.
 
 ---
 
