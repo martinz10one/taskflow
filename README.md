@@ -1,33 +1,35 @@
-# TASKFLOW
+# TASKFLOW — Frontend
 
-Sistema Full Stack para la gestión y procesamiento de solicitudes.
+Interfaz web de TASKFLOW para la gestión y procesamiento de solicitudes.
 
-**Stack:** Vue 3 (frontend) · Node.js + Express (backend) · MongoDB · Redis · Worker Node.js · Docker
+**Stack:** Vue 3 (Vite) · Pinia · Vue Router · Axios · Socket.IO
 
-## Reparto de trabajo (2 personas)
+> El repositorio del **backend** vive aparte: [martinz10one/taskflow-backend](https://github.com/martinz10one/taskflow-backend). No se conecta directamente a MongoDB ni Redis; consume la API a través de `/api`.
 
-- **Persona A — Frontend (todo):** Vue 3 completo — estructura, views, components, router, store, services, Axios, Socket.IO, estilos.
-- **Persona B — Backend (todo):** API Express, MongoDB, Redis, Worker Node.js, Docker Compose.
+## Documentación del proyecto
 
-Ambas personas definen juntas el contrato de la API (endpoints y JSON) antes de codear.
-
-## Flujo de trabajo Git (2 personas)
-
-Ramas base:
-- `main` — producción, siempre estable. Solo se recibe por merge de `develop` (revisado).
-- `develop` — integración del trabajo de ambos.
-
-Ramas de trabajo:
-- `feature/frontend-<tarea>` — trabajo de Persona A
-- `feature/backend-<tarea>` — trabajo de Persona B
-
-Reglas:
-1. Trabajar siempre desde una rama `feature/*` creada desde `develop`.
-2. Al terminar, hacer pull de `develop`, resolver conflictos y abrir Pull Request a `develop`.
-3. La otra persona revisa el PR (código) antes de hacer merge.
-4. Nunca commitear directo a `main` ni a `develop`.
-
-## Documentación
-
-- `ARQUITECTURA_TASKFLOW.md` — arquitectura completa del proyecto
+- `ARQUITECTURA_TASKFLOW.md` — arquitectura completa (frontend, backend, Docker, Socket.IO)
+- `PLAN_COLABORACION.md` — reparto de trabajo, contrato de API y reglas de equipo
 - `Taller TaskFlow.docx` — enunciado del taller
+
+## Estructura Vue 3 (a crear en `src/`)
+
+```text
+src/
+├── assets/        imágenes, iconos, fuentes
+├── components/    botones, tablas, tarjetas, formularios reutilizables
+├── views/         DashboardView · NewRequestView · RequestsView
+│                  RequestDetailView · MonitorView
+├── composables/   useRequests · useFetch · useSocket
+├── store/         requestStore (Pinia)
+├── router/        rutas de la aplicación
+├── services/      requestService (comunicación con la API)
+├── layouts/       MainLayout
+├── styles/        variables y estilos globales
+├── plugins/       axios.js · socket.js
+└── utils/         formatDate · validateRequest
+```
+
+## API de referencia
+
+URL base: `http://localhost:3000/api` — el contrato detallado está en `PLAN_COLABORACION.md` (sección 3).
