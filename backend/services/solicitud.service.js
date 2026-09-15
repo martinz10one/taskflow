@@ -1,4 +1,11 @@
 import Solicitud from '../models/Solicitud.js';
+import { redis, CACHE_LISTA_SOLICITUDES, invalidarCacheSolicitudes } from '../config/redis.js';
+
+const TTL_CACHE = 30;
+
+function claveCacheLista(filtros) {
+  return CACHE_LISTA_SOLICITUDES + ':' + JSON.stringify(filtros);
+}
 
 export async function listarSolicitudes(filtros = {}) {
   const query = {};
@@ -14,7 +21,16 @@ export async function listarSolicitudes(filtros = {}) {
     ];
   }
 
-  return Solicitud.find(query).sort({ fechaCreacion: -1 });
+  const clave = claveCacheLista(filtros);
+  const desdeCache = await redis.get(clave);
+  if (desdeCache) {
+    return JSON.parse(desdeCache);
+  }
+
+  const solicitudes = await Solicitud.find(query).sort({ fechaCreacion: -1 });
+
+  await redis.set(clave, JSON.stringify(solicitudes), 'EX', TTL_CACHE);
+  return solicitudes;
 }
 
 export async function obtenerSolicitudPorId(id) {
@@ -22,14 +38,23 @@ export async function obtenerSolicitudPorId(id) {
 }
 
 export async function crearSolicitud(datos) {
-  const solicitud = new Solicitud(datos);
-  return solicitud.save();
+  const solicitud = new Solicitud({ ...datos, estado: 'EN COLA' });
+  const guardada = await solicitud.save();
+  await invalidarCacheSolicitudes();
+  return guardada;
 }
 
 export async function actualizarSolicitud(id, cambios) {
-  return Solicitud.findByIdAndUpdate(id, cambios, { new: true, runValidators: true });
+  const solicitud = await Solicitud.findByIdAndUpdate(id, cambios, {
+    new: true,
+    runValidators: true,
+  });
+  await invalidarCacheSolicitudes();
+  return solicitud;
 }
 
 export async function eliminarSolicitud(id) {
-  return Solicitud.findByIdAndDelete(id);
+  const solicitud = await Solicitud.findByIdAndDelete(id);
+  await invalidarCacheSolicitudes();
+  return solicitud;
 }
