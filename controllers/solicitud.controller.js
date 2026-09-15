@@ -1,4 +1,6 @@
 import * as solicitudService from '../services/solicitud.service.js';
+import { encolarSolicitud } from '../services/cola.service.js';
+import { emitirEvento } from '../socket/io.js';
 
 function serializar(solicitud) {
   if (!solicitud) return null;
@@ -25,6 +27,13 @@ export async function obtener(req, res) {
 
 export async function crear(req, res) {
   const solicitud = await solicitudService.crearSolicitud(req.body);
+  const id = solicitud._id.toString();
+
+  emitirEvento('solicitud-creada', serializar(solicitud));
+
+  await encolarSolicitud(id);
+  emitirEvento('solicitud-encolada', { id, estado: 'EN COLA' });
+
   res.status(201).json(serializar(solicitud));
 }
 
