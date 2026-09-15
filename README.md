@@ -4,10 +4,12 @@ Sistema Full Stack para la gestión y procesamiento de solicitudes.
 
 **Stack:** Vue 3 (frontend) · Node.js + Express (backend) · MongoDB · Redis · Worker Node.js · Docker
 
-## Equipo (2 personas)
+## Reparto de trabajo (2 personas)
 
-- **Persona A — Frontend:** Vue 3 (views, components, store, services, composables)
-- **Persona B — Backend:** Express + MongoDB + Redis + Worker
+- **Persona A — Frontend (todo):** Vue 3 completo — estructura, views, components, router, store, services, Axios, Socket.IO, estilos.
+- **Persona B — Backend (todo):** API Express, MongoDB, Redis, Worker Node.js, Docker Compose.
+
+Ambas personas definen juntas el contrato de la API (endpoints y JSON) antes de codear.
 
 ## Flujo de trabajo Git (2 personas)
 
