@@ -1,0 +1,34 @@
+# Dependencias
+node_modules/
+
+# Entornos
+.env
+.env.local
+.env.*.local
+
+# Builds
+dist/
+build/
+out/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor / SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Cobertura / tests
+coverage/
+.nyc_output/
+
+# Docker
+docker/data/
+
+# Documentos temporales
+*.tmp
