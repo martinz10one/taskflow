@@ -1,14 +1,15 @@
 services:
   frontend:
     build:
-      context: ../taskflow-frontend
+      context: ./frontend
     ports:
       - "8080:80"
     depends_on:
       - backend
 
   backend:
-    build: .
+    build:
+      context: ./backend
     ports:
       - "3000:3000"
     environment:
@@ -21,7 +22,8 @@ services:
       - redisserver
 
   worker:
-    build: .
+    build:
+      context: ./backend
     command: ["npm", "run", "worker"]
     environment:
       - MONGO_URI=mongodb://mongoserver:27017/taskflow
