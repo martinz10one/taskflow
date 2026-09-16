@@ -1,0 +1,19 @@
+# Dependencias
+node_modules/
+
+# Entornos
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor / SO
+.vscode/
+.idea/
+.DS_Store
+
+# Docker
+docker/data/
