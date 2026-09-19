@@ -1,0 +1,153 @@
+@use 'variables' as *;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: $color-bg;
+  color: $color-text;
+  line-height: 1.6;
+}
+
+a {
+  color: $color-primary;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: $radius-md;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &--primary {
+    background: $color-primary;
+    color: #fff;
+
+    &:hover:not(:disabled) {
+      background: $color-primary-dark;
+    }
+  }
+
+  &--danger {
+    background: $color-error;
+    color: #fff;
+
+    &:hover:not(:disabled) {
+      background: #b91c1c;
+    }
+  }
+
+  &--secondary {
+    background: $color-border;
+    color: $color-text;
+
+    &:hover:not(:disabled) {
+      background: #cbd5e1;
+    }
+  }
+}
+
+.card {
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+}
+
+.input,
+.select {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: $color-primary;
+    box-shadow: 0 0 0 3px rgba($color-primary, 0.15);
+  }
+}
+
+textarea.input {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: $color-text-muted;
+  margin-bottom: 0.3rem;
+}
+
+.form-group {
+  margin-bottom: $spacing-md;
+}
+
+.alert {
+  padding: $spacing-md;
+  border-radius: $radius-md;
+  margin-bottom: $spacing-md;
+  font-size: 0.9rem;
+
+  &--error {
+    background: #fef2f2;
+    color: $color-error;
+    border: 1px solid #fecaca;
+  }
+
+  &--success {
+    background: #f0fdf4;
+    color: $color-respondida;
+    border: 1px solid #bbf7d0;
+  }
+}
+
+.text-muted {
+  color: $color-text-muted;
+}
+
+.text-sm {
+  font-size: 0.85rem;
+}
+
+/* ── Responsive ─────────────────────────────── */
+
+@media (max-width: $bp-tablet) {
+  .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+}
