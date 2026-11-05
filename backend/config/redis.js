@@ -3,6 +3,7 @@ import { env } from './env.js';
 
 export const redis = new Redis(env.redisUrl);
 export const suscripcionRedis = redis.duplicate();
+export const redisCola = new Redis(env.redisUrl, { maxRetriesPerRequest: null });
 
 redis.on('error', (err) => {
   console.error('Error en Redis:', err.message);

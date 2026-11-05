@@ -58,10 +58,11 @@ export const useRequestStore = defineStore('requests', () => {
 
     socket.on('solicitud-error', ({ id, error: err }) => {
       const s = solicitudes.value.find((x) => x.id === id);
-      if (s) {
+      if (s && s.estado !== 'ERROR') {
+        if (s.estado === 'PROCESANDO') estadisticas.value.procesando = Math.max(0, estadisticas.value.procesando - 1);
+        if (s.estado === 'EN COLA') estadisticas.value.enCola = Math.max(0, estadisticas.value.enCola - 1);
         s.estado = 'ERROR';
         s.error = err;
-        if (s.estado !== 'ERROR') estadisticas.value.procesando--;
         estadisticas.value.errores++;
       }
     });

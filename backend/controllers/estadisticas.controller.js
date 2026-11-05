@@ -1,7 +1,9 @@
 import Solicitud from '../models/Solicitud.js';
+import mongoose from 'mongoose';
 
 export async function obtenerEstadisticas(req, res) {
   const conteos = await Solicitud.aggregate([
+    { $match: { propietario: new mongoose.Types.ObjectId(req.user.id) } },
     { $group: { _id: '$estado', total: { $sum: 1 } } },
   ]);
 

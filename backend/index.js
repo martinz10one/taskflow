@@ -18,6 +18,11 @@ suscripcionRedis.on('message', (canal, mensaje) => {
 
 await conectarDB();
 
+if (env.runWorkerInApi) {
+  const { iniciarWorker } = await import('./worker/index.js');
+  await iniciarWorker();
+}
+
 server.listen(env.port, () => {
   console.log(`API TASKFLOW disponible en http://localhost:${env.port}`);
 });

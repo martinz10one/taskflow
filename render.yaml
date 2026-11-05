@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: taskflow
+    runtime: docker
+    plan: free
+    healthCheckPath: /ready
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: RUN_WORKER_IN_API
+        value: "true"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: TRUST_PROXY
+        value: "true"
+      - key: MONGO_URI
+        sync: false
+      - key: REDIS_URL
+        sync: false

@@ -6,6 +6,7 @@ const ESTADOS = ['PENDIENTE', 'EN COLA', 'PROCESANDO', 'RESPONDIDA', 'ERROR'];
 
 const solicitudSchema = new mongoose.Schema(
   {
+    propietario: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true, index: true },
     titulo: { type: String, required: true, trim: true },
     descripcion: { type: String, required: true, trim: true },
     categoria: { type: String, required: true, enum: CATEGORIAS },

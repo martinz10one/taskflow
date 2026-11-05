@@ -2,24 +2,42 @@ services:
   frontend:
     build:
       context: ./frontend
+      args:
+        VITE_API_URL: ${VITE_API_URL:-/api}
+        VITE_SOCKET_URL: ${VITE_SOCKET_URL:-}
     ports:
-      - "8080:80"
+      - "127.0.0.1:${FRONTEND_PORT:-8082}:80"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
 
   backend:
     build:
       context: ./backend
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     environment:
-      - PORT=3000
-      - CLIENT_URL=http://localhost:8080
-      - MONGO_URI=mongodb://mongoserver:27017/taskflow
-      - REDIS_URL=redis://redisserver:6379
+      PORT: 3000
+      NODE_ENV: ${NODE_ENV:-development}
+      CLIENT_URL: ${CLIENT_URL:-http://localhost:8082}
+      MONGO_URI: mongodb://mongoserver:27017/taskflow
+      REDIS_URL: redis://redisserver:6379
+      RUN_WORKER_IN_API: ${RUN_WORKER_IN_API:-false}
+      JWT_SECRET: ${JWT_SECRET:-local-development-secret-change-before-deploy-0123456789}
+      TRUST_PROXY: ${TRUST_PROXY:-false}
     depends_on:
-      - mongoserver
-      - redisserver
+      mongoserver:
+        condition: service_healthy
+      redisserver:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/ready').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    restart: unless-stopped
 
   worker:
     build:
@@ -29,20 +47,46 @@ services:
       - MONGO_URI=mongodb://mongoserver:27017/taskflow
       - REDIS_URL=redis://redisserver:6379
     depends_on:
-      - mongoserver
-      - redisserver
+      mongoserver:
+        condition: service_healthy
+      redisserver:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "import('ioredis').then(({default:Redis})=>{const r=new Redis(process.env.REDIS_URL);r.get('worker:latido').then(v=>{r.disconnect();process.exit(v?'0':'1')}).catch(()=>process.exit(1))})"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   mongoserver:
     image: mongo:7
     ports:
-      - "27018:27017"
+      - "127.0.0.1:27018:27017"
     volumes:
       - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    restart: unless-stopped
 
   redisserver:
     image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
     ports:
-      - "6380:6379"
+      - "127.0.0.1:6380:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
 volumes:
   mongo-data:
+  redis-data:

@@ -6,10 +6,13 @@
         <span class="header__title">TaskFlow</span>
       </div>
       <nav class="nav" :class="{ 'nav--open': menuAbierto }">
-        <router-link to="/" class="nav__link" @click="menuAbierto = false">Dashboard</router-link>
-        <router-link to="/nueva" class="nav__link" @click="menuAbierto = false">Nueva solicitud</router-link>
-        <router-link to="/solicitudes" class="nav__link" @click="menuAbierto = false">Listado</router-link>
-        <router-link to="/monitor" class="nav__link" @click="menuAbierto = false">Monitor</router-link>
+        <template v-if="autenticado">
+          <router-link to="/" class="nav__link" @click="menuAbierto = false">Dashboard</router-link>
+          <router-link to="/nueva" class="nav__link" @click="menuAbierto = false">Nueva solicitud</router-link>
+          <router-link to="/solicitudes" class="nav__link" @click="menuAbierto = false">Listado</router-link>
+          <router-link to="/monitor" class="nav__link" @click="menuAbierto = false">Monitor</router-link>
+          <button class="nav__link nav__logout" @click="cerrarSesion">Salir</button>
+        </template>
       </nav>
       <button class="header__menu-btn" @click="menuAbierto = !menuAbierto">
         <span></span><span></span><span></span>
@@ -22,9 +25,23 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import socket from '@/plugins/socket';
 
 const menuAbierto = ref(false);
+const router = useRouter();
+const route = useRoute();
+const autenticado = computed(() => {
+  route.fullPath;
+  return Boolean(localStorage.getItem('taskflow-token'));
+});
+
+function cerrarSesion() {
+  localStorage.removeItem('taskflow-token');
+  socket.disconnect();
+  router.replace({ name: 'login' });
+}
 </script>
 
 <style scoped lang="scss">
@@ -115,6 +132,12 @@ const menuAbierto = ref(false);
       background: rgba($color-primary, 0.1);
       color: $color-primary;
     }
+  }
+
+  &__logout {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
   }
 }
 
