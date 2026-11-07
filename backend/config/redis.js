@@ -15,7 +15,11 @@ export const CANAL_WORKER = 'canal:worker';
 export const CLAVE_LATIDO_WORKER = 'worker:latido';
 
 export function publicarEventoWorker(evento, datos) {
-  redis.publish(CANAL_WORKER, JSON.stringify({ evento, datos }));
+  redis
+    .publish(CANAL_WORKER, JSON.stringify({ evento, datos }))
+    .catch((error) => {
+      console.error('Error publicando evento en Redis:', error.message);
+    });
 }
 
 export async function invalidarCacheSolicitudes() {

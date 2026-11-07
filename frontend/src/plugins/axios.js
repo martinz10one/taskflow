@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const API_BASE = import.meta.env.VITE_API_URL || '/api';
+// VITE_API_URL puede ser el origen (https://api.onrender.com) o la URL
+// completa del API (.../api). Así funciona igual en local y en Render.
+const RAW_API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:3000').replace(/\\/+$/, '');
+const API_BASE = RAW_API_URL.endsWith('/api') ? RAW_API_URL : `${RAW_API_URL}/api`;
 
 const api = axios.create({
   baseURL: API_BASE,
